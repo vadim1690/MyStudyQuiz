@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/home">
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.example.mystudyquiz.fragments.HomeFragment"
+        android:label="HomeFragment" />
+    <fragment
+        android:id="@+id/account"
+        android:name="com.example.mystudyquiz.fragments.AccountFragment"
+        android:label="AccountFragment" />
+
+    <navigation android:id="@+id/my_quizzes_navigation"
+        app:startDestination="@id/my_quizzes">
+        <fragment
+            android:id="@+id/my_quizzes"
+            android:name="com.example.mystudyquiz.fragments.QuizzesFragment"
+            android:label="QuizzesFragment">
+            <action
+                android:id="@+id/action_my_quizzes_to_questionsFragment"
+                app:destination="@id/questionsFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/questionsFragment"
+            android:name="com.example.mystudyquiz.fragments.QuestionsFragment"
+            android:label="QuestionsFragment">
+            <action
+                android:id="@+id/action_questionsFragment_to_answeringQuizFragment"
+                app:destination="@id/answeringQuizFragment" />
+        </fragment>
+
+        <fragment
+            android:id="@+id/answeringQuizFragment"
+            android:name="com.example.mystudyquiz.fragments.AnsweringQuizFragment"
+            android:label="AnsweringQuizFragment" >
+            <action
+                android:id="@+id/action_answeringQuizFragment_to_my_quizzes"
+                app:destination="@id/my_quizzes"
+                app:popUpTo="@id/home"
+                app:popUpToInclusive="false" />
+            <action
+                android:id="@+id/action_answeringQuizFragment_to_finishedQuizFragment"
+                app:destination="@id/finishedQuizFragment"
+                app:popUpTo="@id/my_quizzes"
+                app:popUpToInclusive="false" />
+
+        </fragment>
+
+        <fragment
+            android:id="@+id/finishedQuizFragment"
+            android:name="com.example.mystudyquiz.fragments.FinishedQuizFragment"
+            android:label="FinishedQuizFragment" >
+            <action
+                android:id="@+id/action_finishedQuizFragment_to_my_quizzes"
+                app:destination="@id/my_quizzes"
+                app:popUpTo="@id/home"
+                app:popUpToInclusive="false" />
+            <action
+                android:id="@+id/action_finishedQuizFragment_to_answeringQuizFragment"
+                app:destination="@id/answeringQuizFragment"
+                app:popUpTo="@id/questionsFragment"
+                app:popUpToInclusive="false" />
+            <action
+                android:id="@+id/action_finishedQuizFragment_to_answersReportBottomDialog"
+                app:destination="@id/answersReportBottomDialog" />
+        </fragment>
+
+        <dialog
+            android:id="@+id/answersReportBottomDialog"
+            android:name="com.example.mystudyquiz.fragments.AnswersReportBottomDialog"
+            android:label="AnswersReportBottomDialog" />
+    </navigation>
+
+
+
+</navigation>
