@@ -39,8 +39,12 @@ public class QuizzesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setViewModel(view);
+        binding.addQuizBtn.setOnClickListener(v -> addNewQuizClicked());
 
+    }
 
+    private void addNewQuizClicked() {
+        Navigation.findNavController(requireView()).navigate(QuizzesFragmentDirections.actionMyQuizzesToAddNewQuizFragment());
     }
 
     private void setViewModel(View view) {

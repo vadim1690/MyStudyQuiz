@@ -124,4 +124,9 @@ public class QuizViewModel extends ViewModel {
     public Answer getCurrentCorrectAnswer() {
         return currentQuestion.getCorrectAnswer();
     }
+
+    public void addNewQuiz(Quiz quiz) {
+        quizRepository.addNewQuiz(quiz);
+
+    }
 }

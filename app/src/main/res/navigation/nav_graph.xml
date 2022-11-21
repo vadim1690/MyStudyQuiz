@@ -22,6 +22,10 @@
             <action
                 android:id="@+id/action_my_quizzes_to_questionsFragment"
                 app:destination="@id/questionsFragment" />
+
+            <action
+                android:id="@+id/action_my_quizzes_to_addNewQuizFragment"
+                app:destination="@id/addNewQuizFragment" />
         </fragment>
         <fragment
             android:id="@+id/questionsFragment"
@@ -73,7 +77,16 @@
             android:name="com.example.mystudyquiz.fragments.AnswersReportBottomDialog"
             android:label="AnswersReportBottomDialog" />
     </navigation>
-
+    <fragment
+        android:id="@+id/addNewQuizFragment"
+        android:name="com.example.mystudyquiz.fragments.AddNewQuizFragment"
+        android:label="AddNewQuizFragment" >
+        <action
+            android:id="@+id/action_addNewQuizFragment_to_my_quizzes_navigation"
+            app:destination="@id/my_quizzes_navigation"
+            app:popUpTo="@id/my_quizzes_navigation"
+            app:popUpToInclusive="false" />
+    </fragment>
 
 
 </navigation>

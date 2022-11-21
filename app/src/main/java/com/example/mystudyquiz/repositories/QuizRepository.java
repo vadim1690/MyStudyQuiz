@@ -10,11 +10,13 @@ import com.example.mystudyquiz.model.Question;
 import com.example.mystudyquiz.model.QuestionList;
 import com.example.mystudyquiz.model.Quiz;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class QuizRepository {
     private MutableLiveData<List<Quiz>> quizzes;
+    private List<Quiz> list;
 
     public QuizRepository() {
         quizzes = new MutableLiveData<>();
@@ -143,9 +145,14 @@ public class QuizRepository {
         Quiz quiz3 = new Quiz("Food & Drink");
         quiz3.setQuestions(questionList3);
 
-
-        quizzes.setValue(Arrays.asList(
-            quiz1,quiz2,quiz3
+        list = new ArrayList<>(Arrays.asList(
+                quiz1,quiz2,quiz3
         ));
+        quizzes.setValue(list);
+    }
+
+    public void addNewQuiz(Quiz quiz) {
+        list.add(quiz);
+        quizzes.setValue(list);
     }
 }
