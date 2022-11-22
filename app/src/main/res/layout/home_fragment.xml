@@ -1,11 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout>
 
-    <TextView
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Home fragment" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Home fragment" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/privacy_policy_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Privacy Policy" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/terms_of_use_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Terms Of Use" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/about_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="about" />
+
+    </LinearLayout>
+</layout>
