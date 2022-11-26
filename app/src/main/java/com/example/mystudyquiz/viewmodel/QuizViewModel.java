@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.mystudyquiz.model.Answer;
 import com.example.mystudyquiz.model.AnswerReportType;
 import com.example.mystudyquiz.model.Question;
+import com.example.mystudyquiz.model.QuestionType;
 import com.example.mystudyquiz.model.Quiz;
 import com.example.mystudyquiz.repositories.QuizRepository;
 
@@ -25,7 +26,10 @@ public class QuizViewModel extends ViewModel {
     private Map<Question, Answer> wrongAnswers;
     private AnswerReportType answersReportType;
     private Question currentQuestion;
+    private Question newQuestionToAdd;
     private int currentQuestionIndex;
+    private QuestionType newQuestionToAddType;
+    private Answer selectedAnswer;
 
     public QuizViewModel() {
         this.quizRepository = new QuizRepository();
@@ -88,7 +92,7 @@ public class QuizViewModel extends ViewModel {
     /**
      * Computes if the answer selected by the user is the right answer to the question and if it is than it increments the correct answers counter.
      */
-    public void computeSelectedAnswer(Answer selectedAnswer) {
+    public void computeSelectedAnswer() {
         if (selectedAnswer != null && currentQuestion.computeAnswer(selectedAnswer)) {
             correctAnswers.put(currentQuestion, selectedAnswer);
         } else {
@@ -128,5 +132,29 @@ public class QuizViewModel extends ViewModel {
     public void addNewQuiz(Quiz quiz) {
         quizRepository.addNewQuiz(quiz);
 
+    }
+
+    public void setNewQuestionToAdd(Question question) {
+        newQuestionToAdd = question;
+    }
+
+    public Question getNewQuestionToAdd() {
+        return newQuestionToAdd;
+    }
+
+    public void addNewQuestionToCurrentQuiz(Question question) {
+        selectedQuiz.getQuestions().addQuestion(question);
+    }
+
+    public void setNewQuestionToAddType(QuestionType questionType) {
+        newQuestionToAddType = questionType;
+    }
+
+    public QuestionType getNewQuestionToAddType() {
+        return newQuestionToAddType;
+    }
+
+    public void setSelectedAnswer(Answer selectedAnswer) {
+        this.selectedAnswer = selectedAnswer;
     }
 }

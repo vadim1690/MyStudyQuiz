@@ -27,6 +27,33 @@
                 android:id="@+id/action_my_quizzes_to_addNewQuizFragment"
                 app:destination="@id/addNewQuizFragment" />
         </fragment>
+
+        <fragment
+            android:id="@+id/addAnswersToQuestionFragment"
+            android:name="com.example.mystudyquiz.fragments.AddAnswersToQuestionFragment"
+            android:label="AddAnswersToQuestionFragment" >
+            <action
+                android:id="@+id/action_addAnswersToQuestionFragment_to_questions_fragment"
+                app:destination="@id/questionsFragment"
+                app:popUpTo="@id/my_quizzes" />
+        </fragment>
+        <fragment
+            android:id="@+id/addNewQuizFragment"
+            android:name="com.example.mystudyquiz.fragments.AddNewQuizFragment"
+            android:label="AddNewQuizFragment" >
+        </fragment>
+
+
+        <fragment
+            android:id="@+id/addNewQuestionFragment"
+            android:name="com.example.mystudyquiz.fragments.AddNewQuestionFragment"
+            android:label="AddNewQuestionFragment" >
+            <action
+                android:id="@+id/action_addNewQuestionFragment_to_addAnswersToQuestionFragment"
+                app:destination="@id/addAnswersToQuestionFragment" />
+        </fragment>
+
+
         <fragment
             android:id="@+id/questionsFragment"
             android:name="com.example.mystudyquiz.fragments.QuestionsFragment"
@@ -34,6 +61,9 @@
             <action
                 android:id="@+id/action_questionsFragment_to_answeringQuizFragment"
                 app:destination="@id/answeringQuizFragment" />
+            <action
+                android:id="@+id/action_questionsFragment_to_addNewQuestionFragment"
+                app:destination="@id/addNewQuestionFragment" />
         </fragment>
 
         <fragment
@@ -77,16 +107,7 @@
             android:name="com.example.mystudyquiz.fragments.AnswersReportBottomDialog"
             android:label="AnswersReportBottomDialog" />
     </navigation>
-    <fragment
-        android:id="@+id/addNewQuizFragment"
-        android:name="com.example.mystudyquiz.fragments.AddNewQuizFragment"
-        android:label="AddNewQuizFragment" >
-        <action
-            android:id="@+id/action_addNewQuizFragment_to_my_quizzes_navigation"
-            app:destination="@id/my_quizzes_navigation"
-            app:popUpTo="@id/my_quizzes_navigation"
-            app:popUpToInclusive="false" />
-    </fragment>
+
 
 
 </navigation>

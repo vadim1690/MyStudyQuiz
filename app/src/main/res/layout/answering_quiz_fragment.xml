@@ -2,9 +2,18 @@
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
+        <variable
+            name="question"
+            type="com.example.mystudyquiz.model.Question" />
+
         <variable
             name="multipleChoiceQuestion"
             type="com.example.mystudyquiz.model.MultipleChoiceQuestion" />
+
+        <variable
+            name="booleanQuestion"
+            type="com.example.mystudyquiz.model.BooleanQuestion" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -76,7 +85,7 @@
                     android:layout_gravity="center"
                     android:textColor="#000000"
                     android:textSize="20sp"
-                    android:text="@{multipleChoiceQuestion.text}"/>
+                    android:text="@{question.text}"/>
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -84,8 +93,9 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <!-- Answers View-->
+        <!-- multiple choice Answers View-->
         <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/multiple_choice_answers_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
@@ -143,7 +153,42 @@
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
+        <!-- boolean Answers View-->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/boolean_answers_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:layout_weight="3">
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/boolean_answer_button_1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="10dp"
+                android:gravity="start|center_vertical"
+                android:textSize="20sp"
+                android:text="True"
+                app:cornerRadius="10dp"
+                android:backgroundTint="#D6D6D6"
+                android:layout_weight="1"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:id="@+id/boolean_answer_button_2"
+                android:text="False"
+                android:layout_height="0dp"
+                android:layout_margin="10dp"
+                android:gravity="start|center_vertical"
+                android:textSize="20sp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="#D6D6D6"
+                android:layout_weight="1"/>
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
         <!-- Bottom view-->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"

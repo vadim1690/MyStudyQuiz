@@ -8,11 +8,11 @@ public class MultipleChoiceQuestion extends Question {
     private Answer answerOption4;
 
     public MultipleChoiceQuestion(String text) {
-        super(text);
+        super(text,QuestionType.MULTIPLE_CHOICE);
     }
 
     public MultipleChoiceQuestion(String text, Answer correctAnswer) {
-        super(text, correctAnswer);
+        super(text,QuestionType.MULTIPLE_CHOICE, correctAnswer);
     }
 
     public Answer getAnswerOption1() {

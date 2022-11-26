@@ -16,6 +16,7 @@ import androidx.navigation.Navigation;
 import com.example.mystudyquiz.R;
 import com.example.mystudyquiz.databinding.AnsweringQuizFragmentBinding;
 import com.example.mystudyquiz.model.Answer;
+import com.example.mystudyquiz.model.BooleanQuestion;
 import com.example.mystudyquiz.model.MultipleChoiceQuestion;
 import com.example.mystudyquiz.model.Question;
 import com.example.mystudyquiz.viewmodel.QuizViewModel;
@@ -26,7 +27,6 @@ public class AnsweringQuizFragment extends Fragment {
     private AnsweringQuizFragmentBinding binding;
     private QuizViewModel viewModel;
     private OnBackPressedCallback callback;
-    private Answer selectedAnswer;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,15 +52,17 @@ public class AnsweringQuizFragment extends Fragment {
 
     private void setClickListeners() {
         binding.skipBtn.setOnClickListener(view -> skipClicked());
-        binding.nextBtn.setOnClickListener(view -> answerSelected(selectedAnswer));
+        binding.nextBtn.setOnClickListener(view -> nextClicked());
         binding.answerButton1.setOnClickListener(view -> multipleChoiceButtonClicked(binding.answerButton1));
         binding.answerButton2.setOnClickListener(view -> multipleChoiceButtonClicked(binding.answerButton2));
         binding.answerButton3.setOnClickListener(view -> multipleChoiceButtonClicked(binding.answerButton3));
         binding.answerButton4.setOnClickListener(view -> multipleChoiceButtonClicked(binding.answerButton4));
+        binding.booleanAnswerButton1.setOnClickListener(view -> multipleChoiceButtonClicked(binding.booleanAnswerButton1));
+        binding.booleanAnswerButton2.setOnClickListener(view -> multipleChoiceButtonClicked(binding.booleanAnswerButton2));
     }
 
     private void multipleChoiceButtonClicked(MaterialButton answerButton) {
-        selectedAnswer = viewModel.getAnswerByText(answerButton.getText().toString());
+        Answer selectedAnswer = viewModel.getAnswerByText(answerButton.getText().toString());
         Answer correctAnswer = viewModel.getCurrentCorrectAnswer();
         if(selectedAnswer.equals(correctAnswer)){
             // button green
@@ -70,7 +72,15 @@ public class AnsweringQuizFragment extends Fragment {
             answerButton.setBackgroundColor(Color.RED);
             setCorrectButton(correctAnswer);
         }
+        viewModel.setSelectedAnswer(selectedAnswer);
         disableMultipleChoiceButtons();
+        disableBooleanAnswersButtons();
+        changeSkipButtonToNext();
+    }
+
+    private void disableBooleanAnswersButtons() {
+        binding.booleanAnswerButton1.setEnabled(false);
+        binding.booleanAnswerButton2.setEnabled(false);
     }
 
     private void disableMultipleChoiceButtons() {
@@ -78,8 +88,6 @@ public class AnsweringQuizFragment extends Fragment {
         binding.answerButton2.setEnabled(false);
         binding.answerButton3.setEnabled(false);
         binding.answerButton4.setEnabled(false);
-        changeSkipButtonToNext();
-
     }
 
     private void changeSkipButtonToNext() {
@@ -101,6 +109,10 @@ public class AnsweringQuizFragment extends Fragment {
             binding.answerButton3.setBackgroundColor(Color.GREEN);
         if(binding.answerButton4.getText().toString().equalsIgnoreCase(correctAnswer.getText()))
             binding.answerButton4.setBackgroundColor(Color.GREEN);
+        if(binding.booleanAnswerButton1.getText().toString().equalsIgnoreCase(correctAnswer.getText()))
+            binding.booleanAnswerButton1.setBackgroundColor(Color.GREEN);
+        if(binding.booleanAnswerButton2.getText().toString().equalsIgnoreCase(correctAnswer.getText()))
+            binding.booleanAnswerButton2.setBackgroundColor(Color.GREEN);
 
     }
 
@@ -137,7 +149,8 @@ public class AnsweringQuizFragment extends Fragment {
     }
 
     private void skipClicked() {
-        answerSelected(null);
+        viewModel.setSelectedAnswer(null);
+        nextClicked();
     }
 
 
@@ -153,9 +166,21 @@ public class AnsweringQuizFragment extends Fragment {
      */
     private void bindQuestionToView(Question question) {
         restoreButtons();
-        selectedAnswer = null;
-        if(question instanceof MultipleChoiceQuestion)
-            binding.setMultipleChoiceQuestion((MultipleChoiceQuestion) question);
+        viewModel.setSelectedAnswer(null);
+        binding.setQuestion(question);
+        switch (question.getQuestionType()){
+            case MULTIPLE_CHOICE:
+                binding.setMultipleChoiceQuestion((MultipleChoiceQuestion) question);
+                binding.multipleChoiceAnswersLayout.setVisibility(View.VISIBLE);
+                binding.booleanAnswersLayout.setVisibility(View.GONE);
+                break;
+            case BOOLEAN:
+                binding.setBooleanQuestion((BooleanQuestion) question);
+                binding.multipleChoiceAnswersLayout.setVisibility(View.GONE);
+                binding.booleanAnswersLayout.setVisibility(View.VISIBLE);
+                break;
+        }
+
     }
 
     private void restoreButtons() {
@@ -163,15 +188,19 @@ public class AnsweringQuizFragment extends Fragment {
         binding.answerButton2.setBackgroundColor(Color.parseColor("#D6D6D6"));
         binding.answerButton3.setBackgroundColor(Color.parseColor("#D6D6D6"));
         binding.answerButton4.setBackgroundColor(Color.parseColor("#D6D6D6"));
+        binding.booleanAnswerButton1.setBackgroundColor(Color.parseColor("#D6D6D6"));
+        binding.booleanAnswerButton2.setBackgroundColor(Color.parseColor("#D6D6D6"));
         binding.answerButton1.setEnabled(true);
         binding.answerButton2.setEnabled(true);
         binding.answerButton3.setEnabled(true);
         binding.answerButton4.setEnabled(true);
+        binding.booleanAnswerButton1.setEnabled(true);
+        binding.booleanAnswerButton2.setEnabled(true);
         changeNextButtonToSkip();
     }
 
-    private void answerSelected(Answer answer) {
-        viewModel.computeSelectedAnswer(answer);
+    private void nextClicked() {
+        viewModel.computeSelectedAnswer();
         continueTheQuiz();
     }
 

@@ -1,16 +1,18 @@
 package com.example.mystudyquiz.model;
 
-public class Question {
+public abstract class Question {
     private String text;
-    private Answer correctAnswer;
+    protected Answer correctAnswer;
     private boolean isCorrect;
+    private QuestionType questionType;
 
-    public Question(String text) {
+    public Question(String text,QuestionType questionType) {
         this.text = text;
+        this.questionType = questionType;
     }
 
-    public Question(String text, Answer correctAnswer) {
-        this(text);
+    public Question(String text,QuestionType questionType, Answer correctAnswer) {
+        this(text,questionType);
         this.correctAnswer = correctAnswer;
     }
 
@@ -30,10 +32,16 @@ public class Question {
         this.correctAnswer = correctAnswer;
     }
 
+    public QuestionType getQuestionType() {
+        return questionType;
+    }
+
+    public void setQuestionType(QuestionType questionType) {
+        this.questionType = questionType;
+    }
 
     public boolean computeAnswer(Answer answer) {
-        isCorrect = answer.getText().equalsIgnoreCase(correctAnswer.getText());
-        return isCorrect;
+        return answer.getText().equalsIgnoreCase(correctAnswer.getText());
     }
 
     public Answer getAnswerByText(String text) {

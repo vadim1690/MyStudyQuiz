@@ -44,6 +44,11 @@ public class QuestionsFragment extends Fragment {
 
     private void setOnClickListeners() {
         binding.startQuizBtn.setOnClickListener(v -> startQuizClicked());
+        binding.addQuestionBtn.setOnClickListener(v -> addQuestionClicked());
+    }
+
+    private void addQuestionClicked() {
+        Navigation.findNavController(requireView()).navigate(QuestionsFragmentDirections.actionQuestionsFragmentToAddNewQuestionFragment());
     }
 
     private void setQuestions() {

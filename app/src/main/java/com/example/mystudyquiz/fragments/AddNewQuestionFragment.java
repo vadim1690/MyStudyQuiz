@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
@@ -21,7 +23,12 @@ import androidx.navigation.Navigation;
 
 import com.example.mystudyquiz.AppUtils;
 import com.example.mystudyquiz.R;
+import com.example.mystudyquiz.databinding.AddNewQuestionFragmentBinding;
 import com.example.mystudyquiz.databinding.AddNewQuizFragmentBinding;
+import com.example.mystudyquiz.model.BooleanQuestion;
+import com.example.mystudyquiz.model.MultipleChoiceQuestion;
+import com.example.mystudyquiz.model.Question;
+import com.example.mystudyquiz.model.QuestionType;
 import com.example.mystudyquiz.model.Quiz;
 import com.example.mystudyquiz.viewmodel.QuizViewModel;
 import com.github.drjacky.imagepicker.ImagePicker;
@@ -35,39 +42,21 @@ import kotlin.jvm.internal.Intrinsics;
 
 
 public class AddNewQuestionFragment extends Fragment {
-    private AddNewQuizFragmentBinding binding;
+    private AddNewQuestionFragmentBinding binding;
     private QuizViewModel viewModel;
-    private ActivityResultLauncher<Intent> launcher;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setResultLaunchers();
+
     }
 
-    private void setResultLaunchers() {
-        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),(ActivityResult result)->{
-            if(result.getResultCode()==RESULT_OK){
-                if (result.getData() != null) {
-                    setPhoto(result.getData().getData());
-                }
-            }else if(result.getResultCode()== ImagePicker.RESULT_ERROR){
-                AppUtils.showAlertDialog(requireContext(),"FAILED!!!");
-            }
-        });
-    }
-
-    private void setPhoto(Uri uri) {
-        binding.addImageBtn.setImageURI(uri);
-        binding.addImageBtn.setEnabled(false);
-        binding.addImageText.setVisibility(View.GONE);
-    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = AddNewQuizFragmentBinding.inflate(inflater, container, false);
+        binding = AddNewQuestionFragmentBinding.inflate(inflater, container, false);
         //set variables in Binding
         return binding.getRoot();
     }
@@ -76,7 +65,31 @@ public class AddNewQuestionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setViewModel(view);
+        setBinding();
+        setQuestionTypes();
         setOnClickListeners();
+
+    }
+
+    private void setBinding() {
+        binding.setQuiz(viewModel.getSelectedQuiz());
+    }
+
+    private void setQuestionTypes() {
+        String[] types = new String[]{"Multiple choice(4 Options)", "Boolean(True/False)"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.dropdown_menu_popup_item, types);
+        binding.questionTypeDropdown.setAdapter(adapter);
+        binding.questionTypeDropdown.setOnItemClickListener((parent, view, position, id) -> {
+            switch (position){
+                case 0:
+                    viewModel.setNewQuestionToAddType(QuestionType.MULTIPLE_CHOICE);
+                    break;
+                case 1:
+                    viewModel.setNewQuestionToAddType(QuestionType.BOOLEAN);
+                    break;
+            }
+
+        });
 
     }
 
@@ -87,32 +100,31 @@ public class AddNewQuestionFragment extends Fragment {
     }
 
     private void setOnClickListeners() {
-        binding.addImageBtn.setOnClickListener(v -> openImagePicker());
-        binding.createQuizBtn.setOnClickListener(v -> createQuizClicked());
+        binding.continueBtn.setOnClickListener(v -> continueToAddingAnswers());
+
     }
 
-    private void createQuizClicked() {
-        viewModel.addNewQuiz(new Quiz(binding.quizNameEdt.getText().toString()));
-        Navigation.findNavController(requireView()).popBackStack();
+    private void continueToAddingAnswers() {
+        if (!validateInput()) {
+            AppUtils.showAlertDialog(requireContext(), "Please enter question text");
+            return;
+        }
+        viewModel.setNewQuestionToAdd(getQuestionBySelectedType());
+        Navigation.findNavController(requireView()).navigate(AddNewQuestionFragmentDirections.actionAddNewQuestionFragmentToAddAnswersToQuestionFragment());
+
     }
 
-    private void openImagePicker() {
+    private Question getQuestionBySelectedType() {
+        switch (viewModel.getNewQuestionToAddType()) {
+            case MULTIPLE_CHOICE: return new MultipleChoiceQuestion(binding.questionTextEdt.getText().toString());
 
-        ImagePicker.Companion.with(requireActivity())
-                .crop()
-                .cropFreeStyle()
-                .maxResultSize(512,512,true)
-                .provider(ImageProvider.BOTH) //Or bothCameraGallery()
-                .createIntentFromDialog(new Function1(){
-                    public Object invoke(Object var1){
-                        this.invoke((Intent)var1);
-                        return Unit.INSTANCE;
-                    }
+            case BOOLEAN: return new BooleanQuestion(binding.questionTextEdt.getText().toString());
+        }
 
-                    public final void invoke(@NotNull Intent it){
-                        Intrinsics.checkNotNullParameter(it,"it");
-                        launcher.launch(it);
-                    }
-                });
+        return null;
+    }
+
+    private boolean validateInput() {
+        return !binding.questionTextEdt.toString().isEmpty();
     }
 }
