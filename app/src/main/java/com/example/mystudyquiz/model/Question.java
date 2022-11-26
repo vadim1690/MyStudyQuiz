@@ -3,7 +3,6 @@ package com.example.mystudyquiz.model;
 public abstract class Question {
     private String text;
     protected Answer correctAnswer;
-    private boolean isCorrect;
     private QuestionType questionType;
 
     public Question(String text,QuestionType questionType) {

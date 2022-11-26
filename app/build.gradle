@@ -36,6 +36,7 @@ android {
 dependencies {
 
     def nav_version = "2.5.3"
+    def room_version = "2.4.2"
 
     // Java language implementation
     implementation "androidx.navigation:navigation-fragment:$nav_version"
@@ -45,6 +46,12 @@ dependencies {
 
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+
+
+    // Room components
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    androidTestImplementation "androidx.room:room-testing:$room_version"
 
     implementation 'com.github.owl-93.Determinate-Progress-View:release:v1.4.4'
 
