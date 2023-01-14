@@ -1,10 +1,13 @@
 package com.example.mystudyquiz.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,16 +17,17 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.Navigation;
 
-import com.example.mystudyquiz.AppUtils;
+import com.example.mystudyquiz.Constants;
+import com.example.mystudyquiz.utils.AppUtils;
 import com.example.mystudyquiz.R;
 import com.example.mystudyquiz.databinding.AddAnswersToQuestionFragmentBinding;
-import com.example.mystudyquiz.databinding.AddNewQuestionFragmentBinding;
 import com.example.mystudyquiz.model.Answer;
-import com.example.mystudyquiz.model.AnswerList;
-import com.example.mystudyquiz.model.BooleanQuestion;
-import com.example.mystudyquiz.model.MultipleChoiceQuestion;
 import com.example.mystudyquiz.model.Question;
 import com.example.mystudyquiz.viewmodel.QuizViewModel;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 import java.util.Arrays;
 
@@ -32,6 +36,7 @@ public class AddAnswersToQuestionFragment extends Fragment {
     private AddAnswersToQuestionFragmentBinding binding;
     private QuizViewModel viewModel;
 
+    private InterstitialAd mInterstitialAd;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +60,29 @@ public class AddAnswersToQuestionFragment extends Fragment {
         setBinding();
         setViewByQuestionType();
         setOnClickListeners();
+        initializeAds();
 
+    }
+
+    private void initializeAds() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(requireContext(), "ca-app-pub-3940256099942544/1033173712", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        mInterstitialAd = null;
+                    }
+                });
     }
 
     private void setViewByQuestionType() {
@@ -108,44 +135,67 @@ public class AddAnswersToQuestionFragment extends Fragment {
         Answer correct = null;
         switch (question.getQuestionType()) {
             case MULTIPLE_CHOICE:
-                MultipleChoiceQuestion multipleChoiceQuestion = (MultipleChoiceQuestion) question;
-                correct = new Answer(binding.correctAnswer1TextEdt.getText().toString());
-                multipleChoiceQuestion.setAnswerList(getMultipleChoiceAnswerList());
+                if (!validateMultiChoiceAnswers()) {
+                    AppUtils.showAlertDialog(requireContext(), "Please enter text for all 4 answers text fields");
+                    return;
+                }
+                correct = new Answer(binding.correctAnswer1TextEdt.getText().toString(), question.getQuestionId());
+                question.setAnswerList(Arrays.asList(
+                        correct,
+                        new Answer(binding.answer2TextEdt.getText().toString(), viewModel.getNewQuestionToAdd().getQuestionId()),
+                        new Answer(binding.answer3TextEdt.getText().toString(), viewModel.getNewQuestionToAdd().getQuestionId()),
+                        new Answer(binding.answer4TextEdt.getText().toString(), viewModel.getNewQuestionToAdd().getQuestionId())
+                ));
                 break;
 
             case BOOLEAN:
-                BooleanQuestion booleanQuestion = (BooleanQuestion) question;
+                if (!validateBooleanAnswers()) {
+                    AppUtils.showAlertDialog(requireContext(), "Please select correct and wrong answers by clicking them ");
+                    return;
+                }
+                Answer wrong = getBooleanAnswer(false);
                 correct = getBooleanAnswer(true);
-                booleanQuestion.setWrongBooleanAnswer(getBooleanAnswer(false));
+                question.setAnswerList(Arrays.asList(correct, wrong));
                 break;
-
         }
 
-        question.setCorrectAnswer(correct);
+        if (correct != null) {
+            question.setCorrectAnswer(correct);
+        }
         viewModel.addNewQuestionToCurrentQuiz(question);
         finishQuizCreation();
     }
 
-    private AnswerList getMultipleChoiceAnswerList() {
-        return new AnswerList(
-                Arrays.asList(
-                        new Answer(binding.correctAnswer1TextEdt.getText().toString()),
-                        new Answer(binding.answer2TextEdt.getText().toString()),
-                        new Answer(binding.answer3TextEdt.getText().toString()),
-                        new Answer(binding.answer4TextEdt.getText().toString())
-                ));
+    private boolean validateMultiChoiceAnswers() {
+        return !TextUtils.isEmpty(binding.correctAnswer1TextEdt.getText()) &&
+                !TextUtils.isEmpty(binding.answer2TextEdt.getText()) &&
+                !TextUtils.isEmpty(binding.answer3TextEdt.getText()) &&
+                !TextUtils.isEmpty(binding.answer4TextEdt.getText());
     }
+
+    private boolean validateBooleanAnswers() {
+        return binding.booleanAnswerTrue.isSelected() || binding.booleanAnswerFalse.isSelected();
+    }
+
 
     private Answer getBooleanAnswer(boolean getCorrect) {
         if (binding.booleanAnswerTrue.isSelected())
-            return getCorrect ? new Answer(String.valueOf(true)) : new Answer(String.valueOf(false));
+            return getCorrect ? new Answer(String.valueOf(true), viewModel.getNewQuestionToAdd().getQuestionId()) : new Answer(String.valueOf(false), viewModel.getNewQuestionToAdd().getQuestionId());
         else if (binding.booleanAnswerFalse.isSelected())
-            return getCorrect ? new Answer(String.valueOf(false)) : new Answer(String.valueOf(true));
+            return getCorrect ? new Answer(String.valueOf(false), viewModel.getNewQuestionToAdd().getQuestionId()) : new Answer(String.valueOf(true), viewModel.getNewQuestionToAdd().getQuestionId());
         return null;
     }
 
     private void finishQuizCreation() {
-        Navigation.findNavController(requireView()).navigate(AddAnswersToQuestionFragmentDirections.actionAddAnswersToQuestionFragmentToQuestionsFragment());
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(Constants.GENERAL_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
+        if (!sharedPreferences.getBoolean(Constants.GENERAL_SHARED_PREFERENCES_PRO_SUBSCRIPTION_KEY, false)) {
+            if (mInterstitialAd != null) {
+                mInterstitialAd.show(requireActivity());
+            }
+            requireView().postDelayed(() -> Navigation.findNavController(requireView()).popBackStack(R.id.questionsFragment, false), 300);
+        } else {
+            Navigation.findNavController(requireView()).popBackStack(R.id.questionsFragment, false);
+        }
     }
 
 }

@@ -1,158 +1,149 @@
 package com.example.mystudyquiz.repositories;
 
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.mystudyquiz.model.Answer;
-import com.example.mystudyquiz.model.AnswerList;
-import com.example.mystudyquiz.model.MultipleChoiceQuestion;
+import com.example.mystudyquiz.data.AnswerDao;
+import com.example.mystudyquiz.data.AppDatabase;
+import com.example.mystudyquiz.data.QuestionDao;
+import com.example.mystudyquiz.data.QuizDao;
+import com.example.mystudyquiz.data.entities.QuestionWithAnswersEntity;
+import com.example.mystudyquiz.data.entities.QuizStatistic;
 import com.example.mystudyquiz.model.Question;
-import com.example.mystudyquiz.model.QuestionList;
 import com.example.mystudyquiz.model.Quiz;
+import com.example.mystudyquiz.viewmodel.QuizViewModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class QuizRepository {
     private MutableLiveData<List<Quiz>> quizzes;
     private List<Quiz> list;
+    private QuizDao quizDao;
+    private QuestionDao questionDao;
+    private AnswerDao answerDao;
+    private Context context;
 
-    public QuizRepository() {
+    public QuizRepository(Context context) {
+        this.context = context;
         quizzes = new MutableLiveData<>();
-        setData();
+        quizDao = AppDatabase.getInstance(context).quizDao();
+        questionDao = AppDatabase.getInstance(context).questionDao();
+        answerDao = AppDatabase.getInstance(context).answerDao();
+
     }
 
-    public MutableLiveData<List<Quiz>> getQuizzes() {
-        return quizzes;
-    }
+    public LiveData<List<Quiz>> getQuizzes() {
 
-    private void setData() {
-        MultipleChoiceQuestion question1 = new MultipleChoiceQuestion("What country has the highest life expectancy?", new Answer("Hong Kong"));
-        question1.setAnswerList(new AnswerList(Arrays.asList(
-                new Answer("Hong Kong"),
-                new Answer("Tel-Aviv"),
-                new Answer("Paris"),
-                new Answer("USA")
-        )));
-        MultipleChoiceQuestion question2 = new MultipleChoiceQuestion("Where would you be if you were standing on the Spanish Steps?", new Answer("Rome"));
-        question2.setAnswerList(new AnswerList(Arrays.asList(
-                new Answer("Hong Kong"),
-                new Answer("Tel-Aviv"),
-                new Answer("Russia"),
-                new Answer("USA")
-        )));
-        MultipleChoiceQuestion question3 = new MultipleChoiceQuestion("Which language has the more native speakers: English or Spanish?", new Answer("Spanish"));
-        question3.setAnswerList(new AnswerList(Arrays.asList(
-                new Answer("Spanish"),
-                new Answer("English"),
-                new Answer("German"),
-                new Answer("Chinese")
-        )));
-        MultipleChoiceQuestion question4 = new MultipleChoiceQuestion("What is the most common surname in the United States?", new Answer("Smith"));
-        question4.setAnswerList(new AnswerList(Arrays.asList(
-                new Answer("Hank"),
-                new Answer("David"),
-                new Answer("Gorge"),
-                new Answer("Smith")
-        )));
-
-        QuestionList questionList1 = new QuestionList();
-        questionList1.addQuestion(question1);
-        questionList1.addQuestion(question2);
-        questionList1.addQuestion(question3);
-        questionList1.addQuestion(question4);
-
-
-        Quiz quiz1 = new Quiz("General Knowledge");
-        quiz1.setQuestions(questionList1);
-
-
-        MultipleChoiceQuestion question5 = new MultipleChoiceQuestion("What is the highest common factor of the numbers 30 and 132?", new Answer("6"));
-        question5.setAnswerList(new AnswerList(Arrays.asList(
-                new Answer("6"),
-                new Answer("14"),
-                new Answer("18"),
-                new Answer("22")
-        )));
-        MultipleChoiceQuestion question6 = new MultipleChoiceQuestion("From the number 0 to the number 1000, the letter “A” appears only in?", new Answer("1000"));
-        question6.setAnswerList(new AnswerList(Arrays.asList(
-                new Answer("1000"),
-                new Answer("2"),
-                new Answer("5"),
-                new Answer("38")
-        )));
-        MultipleChoiceQuestion question7 = new MultipleChoiceQuestion("What is next in the following number series: 256, 289, 324, 361 . . . ?", new Answer("400"));
-        question7.setAnswerList(new AnswerList(Arrays.asList(
-                new Answer("363"),
-                new Answer("362"),
-                new Answer("521"),
-                new Answer("Smith")
-        )));
-        MultipleChoiceQuestion question8 = new MultipleChoiceQuestion("What is the value of Pi to four individual decimal places?", new Answer("3.1416"));
-        question8.setAnswerList(new AnswerList(Arrays.asList(
-                new Answer("4.1416"),
-                new Answer("3.2416"),
-                new Answer("3.1415"),
-                new Answer("3.1416")
-        )));
-
-        QuestionList questionList2 = new QuestionList();
-        questionList2.addQuestion(question5);
-        questionList2.addQuestion(question6);
-        questionList2.addQuestion(question7);
-        questionList2.addQuestion(question8);
-
-        Quiz quiz2 = new Quiz("Math");
-        quiz2.setQuestions(questionList2);
-
-
-        MultipleChoiceQuestion question9 = new MultipleChoiceQuestion("Cacio & Pepe is a staple of what Italian city’s cuisine? ", new Answer("Rome"));
-        question9.setAnswerList(new AnswerList(Arrays.asList(
-                new Answer("Hong Kong"),
-                new Answer("Tel-Aviv"),
-                new Answer("Rome"),
-                new Answer("USA")
-        )));
-        MultipleChoiceQuestion question10 = new MultipleChoiceQuestion("Where did sushi originate?", new Answer("China"));
-        question10.setAnswerList(new AnswerList(Arrays.asList(
-                new Answer("Hong Kong"),
-                new Answer("Tel-Aviv"),
-                new Answer("Rome"),
-                new Answer("China")
-        )));
-        MultipleChoiceQuestion question11 = new MultipleChoiceQuestion("What is a Beaujolais?", new Answer("A type of red wine"));
-        question11.setAnswerList(new AnswerList(Arrays.asList(
-                new Answer("A type of red wine"),
-                new Answer("A dress"),
-                new Answer("Country"),
-                new Answer("Lake")
-        )));
-        MultipleChoiceQuestion question12 = new MultipleChoiceQuestion("What is the world’s best-selling stout beer? ", new Answer("Guinness"));
-        question12.setAnswerList(new AnswerList(Arrays.asList(
-                new Answer("Guinness"),
-                new Answer("Corona"),
-                new Answer("Brew-dog"),
-                new Answer("Malka")
-        )));
-
-        QuestionList questionList3 = new QuestionList();
-        questionList3.addQuestion(question9);
-        questionList3.addQuestion(question10);
-        questionList3.addQuestion(question11);
-        questionList3.addQuestion(question12);
-
-        Quiz quiz3 = new Quiz("Food & Drink");
-        quiz3.setQuestions(questionList3);
-
-        list = new ArrayList<>(Arrays.asList(
-                quiz1,quiz2,quiz3
-        ));
-        quizzes.setValue(list);
+        return quizDao.getAllQuizzes();
     }
 
     public void addNewQuiz(Quiz quiz) {
-        list.add(quiz);
-        quizzes.setValue(list);
+        AppDatabase.databaseExecutor.execute(() -> quizDao.insertQuiz(quiz));
+    }
+
+    public LiveData<List<Question>> getQuestionsForQuiz(String quizId) {
+        return questionDao.getQuestionsForQuiz(quizId);
+    }
+
+    public void addNewQuestionToCurrentQuiz(Question question) {
+        AppDatabase.databaseExecutor.execute(() -> {
+            questionDao.insertQuestion(question);
+            insertAnswers(question);
+        });
+
+    }
+
+    private void insertAnswers(Question question) {
+        question.getAnswerList().forEach(answer -> AppDatabase.databaseExecutor.execute(() -> answerDao.insertAnswer(answer)));
+
+    }
+
+    public void getAllQuestionsWithAnswersForQuiz(String quizId, List<Question> questions, QuizViewModel.QuestionsWithAnswersCallback questionsWithAnswersCallback) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        AppDatabase.databaseExecutor.execute(() -> {
+            List<Question> questionList = new ArrayList<>();
+            List<QuestionWithAnswersEntity> list = questionDao.getQuestionWithAnswers(quizId);
+            list.forEach(questionWithAnswersEntity -> {
+
+                questionWithAnswersEntity.questionEntity.setAnswerList(questionWithAnswersEntity.answerList);
+
+                questionWithAnswersEntity.
+                        answerList.
+                        stream().
+                        filter(answer -> answer.getAnswerId().equalsIgnoreCase(questionWithAnswersEntity.questionEntity.getCorrectAnswerId())).
+                        findFirst().ifPresent(oAnswer -> questionWithAnswersEntity.questionEntity.setCorrectAnswer(oAnswer));
+
+                questionList.add(questionWithAnswersEntity.questionEntity);
+            });
+            handler.post(() -> questionsWithAnswersCallback.onAllQuestionsReady(questionList));
+        });
+    }
+
+    public void deleteQuiz(Quiz quiz) {
+        AppDatabase.databaseExecutor.execute(() -> quizDao.deleteQuiz(quiz));
+    }
+
+    public void deleteQuestion(Question question) {
+        AppDatabase.databaseExecutor.execute(() -> questionDao.deleteQuestion(question));
+
+    }
+
+    public void updateQuiz(Quiz quiz) {
+        AppDatabase.databaseExecutor.execute(() -> quizDao.updateQuiz(quiz));
+    }
+
+
+    public void getAllQuizStatistics(List<Quiz> quizzes, QuizViewModel.StatisticsCallback statisticsCallback) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        AppDatabase.databaseExecutor.execute(() -> {
+            List<QuizStatistic> quizStatisticList = new ArrayList<>();
+            quizzes.forEach(quiz -> {
+                QuizStatistic quizStatistic = getStatisticsForQuiz(quiz);
+                quizStatisticList.add(quizStatistic);
+            });
+            handler.post(() -> statisticsCallback.onAllStatisticsCreated(quizStatisticList));
+        });
+
+    }
+
+    private QuizStatistic getStatisticsForQuiz(Quiz quiz) {
+        QuizStatistic quizStatistic = new QuizStatistic();
+        quizStatistic.setQuizName(quiz.getName());
+        quizStatistic.setTimesTaken(String.valueOf(quiz.getNumberOfTimesTaken()));
+        quizStatistic.setAverage(String.format(Locale.getDefault(),"%,.2f", quiz.getAverage()));
+        quizStatistic.setNumberOfCorrectTimes(String.valueOf(quiz.getNumberOfCorrectTimes()));
+        quizStatistic.setNumberOfWrongTimes(String.valueOf(quiz.getNumberOfWrongTimes()));
+        Question hardestQuestion = getQuestionById(quiz.getHardestQuestionId());
+        Question easiestQuestion = getQuestionById(quiz.getEasiestQuestionId());
+        if(hardestQuestion != null){
+            quizStatistic.setHardestQuestion(hardestQuestion.getText());
+            quizStatistic.setHardestQuestionCorrectTimes(String.valueOf(hardestQuestion.getNumberOfTimesCorrect()));
+            quizStatistic.setHardestQuestionWrongTimes(String.valueOf(hardestQuestion.getNumberOfTimesWrong()));
+        }
+        if(easiestQuestion != null){
+            quizStatistic.setEasiestQuestion(easiestQuestion.getText());
+            quizStatistic.setEasiestQuestionCorrectTimes(String.valueOf(easiestQuestion.getNumberOfTimesCorrect()));
+            quizStatistic.setEasiestQuestionWrongTimes(String.valueOf(easiestQuestion.getNumberOfTimesWrong()));
+        }
+
+        return quizStatistic;
+
+    }
+
+    private Question getQuestionById(String questionId) {
+        return questionDao.getQuestionById(questionId);
+    }
+
+    public void updateQuizWithQuestions(Quiz selectedQuiz) {
+        AppDatabase.databaseExecutor.execute(() -> selectedQuiz.getQuestions().getQuestionList().forEach(question -> {
+            questionDao.updateQuestion(question);
+        }));
+        updateQuiz(selectedQuiz);
     }
 }

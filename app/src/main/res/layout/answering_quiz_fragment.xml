@@ -7,215 +7,274 @@
             name="question"
             type="com.example.mystudyquiz.model.Question" />
 
-        <variable
-            name="multipleChoiceQuestion"
-            type="com.example.mystudyquiz.model.MultipleChoiceQuestion" />
-
-        <variable
-            name="booleanQuestion"
-            type="com.example.mystudyquiz.model.BooleanQuestion" />
     </data>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@drawable/boredr_background"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayoutCompat"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@color/primary_blue"
+            android:layout_alignParentTop="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <!-- Top View-->
         <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayoutCompat1"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:gravity="center"
-            android:layout_weight="1">
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_alignParentTop="true"
+            android:background="@color/white"
+            android:gravity="center">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                app:tint="@color/black"
                 android:layout_weight="1"
-                android:tint="#001F6A"
-                android:src="@android:drawable/ic_menu_help"/>
+                android:src="@android:drawable/ic_menu_help" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/quiz_name_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="24sp"
                 android:layout_weight="8"
-                android:text="Quiz name"/>
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:text="Quiz name"
+                android:textSize="24sp" />
 
 
             <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/exit_quiz_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:tint="#A50000"
-                android:src="@android:drawable/ic_menu_close_clear_cancel"/>
-
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:tint="#A50000" />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-        <View
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_below="@+id/linearLayoutCompat1"
+            android:id="@+id/materialCardView"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:background="@color/black"/>
+            android:layout_height="match_parent"
+            android:layout_margin="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="40dp"
+            android:elevation="4dp"
+            app:cardCornerRadius="20dp">
 
-        <!-- Question View-->
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            android:layout_weight="3">
-
-
-            <com.google.android.material.card.MaterialCardView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
-                android:elevation="4dp"
-                app:cardCornerRadius="20dp"
-                android:backgroundTint="#D6D6D6">
+                android:layout_height="match_parent">
+
+                <ProgressBar
+                    android:id="@+id/progress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_height="20dp">
+
+                </ProgressBar>
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/progress_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_gravity="center"
-                    android:textColor="#000000"
-                    android:textSize="20sp"
-                    android:text="@{question.text}"/>
-
-            </com.google.android.material.card.MaterialCardView>
-
-
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <!-- multiple choice Answers View-->
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/multiple_choice_answers_layout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            android:padding="5dp"
-            android:layout_weight="5">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/answer_button_1"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_margin="10dp"
-                android:gravity="start|center_vertical"
-                android:textSize="20sp"
-                android:text="@{multipleChoiceQuestion.answerOption1.text}"
-                app:cornerRadius="10dp"
-                android:backgroundTint="#D6D6D6"
-                android:layout_weight="1"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:id="@+id/answer_button_2"
-                android:text="@{multipleChoiceQuestion.answerOption2.text}"
-                android:layout_height="0dp"
-                android:layout_margin="10dp"
-                android:gravity="start|center_vertical"
-                android:textSize="20sp"
-                app:cornerRadius="10dp"
-                android:backgroundTint="#D6D6D6"
-                android:layout_weight="1"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/answer_button_3"
-                android:layout_width="match_parent"
-                android:text="@{multipleChoiceQuestion.answerOption3.text}"
-                android:layout_height="0dp"
-                android:layout_margin="10dp"
-                android:gravity="start|center_vertical"
-                android:textSize="20sp"
-                app:cornerRadius="10dp"
-                android:backgroundTint="#D6D6D6"
-                android:layout_weight="1"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/answer_button_4"
-                android:layout_width="match_parent"
-                android:text="@{multipleChoiceQuestion.answerOption4.text}"
-                android:gravity="start|center_vertical"
-                android:textSize="20sp"
-                android:layout_height="0dp"
-                android:layout_margin="10dp"
-                app:cornerRadius="10dp"
-                android:backgroundTint="#D6D6D6"
-                android:layout_weight="1"/>
+                    android:layout_below="@+id/progress"
+                    android:gravity="center"
+                    android:text=""/>
+                <!-- Question View-->
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_below="@+id/progress_text"
+                    android:id="@+id/question_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
 
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:backgroundTint="@color/primary_blue_soft"
+                        android:minHeight="150dp"
+                        android:elevation="4dp"
+                        app:cardCornerRadius="20dp">
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
-        <!-- boolean Answers View-->
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/boolean_answers_layout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            android:padding="5dp"
-            android:visibility="gone"
-            android:layout_weight="3">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="10dp"
+                            android:text="@{question.text}"
+                            android:textColor="#000000"
+                            android:textSize="20sp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/boolean_answer_button_1"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_margin="10dp"
-                android:gravity="start|center_vertical"
-                android:textSize="20sp"
-                android:text="True"
-                app:cornerRadius="10dp"
-                android:backgroundTint="#D6D6D6"
-                android:layout_weight="1"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:id="@+id/boolean_answer_button_2"
-                android:text="False"
-                android:layout_height="0dp"
-                android:layout_margin="10dp"
-                android:gravity="start|center_vertical"
-                android:textSize="20sp"
-                app:cornerRadius="10dp"
-                android:backgroundTint="#D6D6D6"
-                android:layout_weight="1"/>
+                    </com.google.android.material.card.MaterialCardView>
 
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
-        <!-- Bottom view-->
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:gravity="center"
-            android:layout_weight="1">
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/skip_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_margin="5dp"
-                android:text="Skip"
-                android:textSize="20sp"/>
+                <!-- multiple choice Answers View-->
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_below="@+id/question_view"
+                    android:id="@+id/multiple_choice_answers_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/bottom_layout"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/next_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_margin="5dp"
-                android:text="Next"
-                android:textSize="20sp"/>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/answer_button_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#D6D6D6"
+                        android:textColor="@color/black"
+                        android:gravity="start|center_vertical"
+                        android:textSize="16sp"
+                        app:cornerRadius="10dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/answer_button_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#D6D6D6"
+                        android:gravity="start|center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:cornerRadius="10dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/answer_button_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#D6D6D6"
+                        android:gravity="start|center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:cornerRadius="10dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/answer_button_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#D6D6D6"
+                        android:gravity="start|center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:cornerRadius="10dp" />
 
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <!-- boolean Answers View-->
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_below="@+id/question_view"
+                    android:id="@+id/boolean_answers_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/bottom_layout"
+                    android:orientation="vertical"
+                    android:padding="5dp"
+                    android:visibility="gone">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/boolean_answer_button_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:gravity="start|center_vertical"
+                        android:text="True"
+                        android:textSize="30sp"
+                        app:cornerRadius="10dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/boolean_answer_button_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:maxHeight="60dp"
+                        android:gravity="start|center_vertical"
+                        android:text="False"
+                        android:textSize="30sp"
+                        app:cornerRadius="10dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                    </View>
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <!-- Bottom view-->
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/bottom_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/skip_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        style="@style/MyButtonSmallSize"
+                        android:visibility="gone"
+                        android:padding="10dp"
+                        android:text="Skip" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/next_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        style="@style/MyButtonSmallSize"
+                        android:padding="10dp"
+                        android:text="Next" />
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+    </RelativeLayout>
+
 </layout>

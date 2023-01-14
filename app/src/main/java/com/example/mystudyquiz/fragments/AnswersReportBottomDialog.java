@@ -59,5 +59,11 @@ public class AnswersReportBottomDialog extends BottomSheetDialogFragment {
         viewModel = new ViewModelProvider(NavHostFragment.findNavController(this).getBackStackEntry(R.id.my_quizzes_navigation)).get(QuizViewModel.class);
     }
 
-
+    private Callback callback;
+    public interface Callback{
+        void call();
+    }
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
 }

@@ -7,15 +7,15 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import com.example.mystudyquiz.model.AnswerEntity;
-import com.example.mystudyquiz.model.QuestionEntity;
-import com.example.mystudyquiz.model.QuizEntity;
+import com.example.mystudyquiz.model.Answer;
+import com.example.mystudyquiz.model.Question;
+import com.example.mystudyquiz.model.Quiz;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {QuizEntity.class, QuestionEntity.class, AnswerEntity.class}, version = 1)
+@Database(entities = {Quiz.class, Question.class, Answer.class}, version = 7)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -27,13 +27,15 @@ public abstract class AppDatabase extends RoomDatabase {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "myStudyQuizDatabase").fallbackToDestructiveMigration().build();
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "myStudyQuizDatabase").
+                            fallbackToDestructiveMigration().
+                            build();
                 }
             }
         }
         return INSTANCE;
     }
-//    public abstract QuizDao quizDao();
-//    public abstract QuestionDao questionDao();
-//    public abstract AnswerDao answerDao();
+    public abstract QuizDao quizDao();
+    public abstract QuestionDao questionDao();
+    public abstract AnswerDao answerDao();
 }

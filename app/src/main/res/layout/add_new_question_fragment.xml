@@ -14,6 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/background"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -102,11 +103,13 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/primary_blue"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp">
 
                 <AutoCompleteTextView
                     android:id="@+id/question_type_dropdown"
+                    android:textColor="@color/primary_blue"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="none" />
@@ -130,11 +133,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                style="@style/MyButtonSmallSize"
                 android:padding="15dp"
                 android:layout_margin="10dp"
-                android:text="Continue"
-                android:textSize="18sp"
-                app:cornerRadius="2dp" />
+                android:text="Continue"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
 

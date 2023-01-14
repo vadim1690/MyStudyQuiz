@@ -1,6 +1,7 @@
 package com.example.mystudyquiz.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +56,6 @@ public class FinishedQuizFragment extends Fragment {
         callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
-                // TODO: Show dialog to the user if he is sure he wants to leave the quiz.
                 this.remove();
                 finishClicked();
             }
@@ -74,12 +74,13 @@ public class FinishedQuizFragment extends Fragment {
     private void tryAgainClicked() {
         viewModel.currentQuizStartOver();
         callback.remove();
-        Navigation.findNavController(requireView()).navigate(FinishedQuizFragmentDirections.actionFinishedQuizFragmentToAnsweringQuizFragment());
+        Navigation.findNavController(requireView()).popBackStack(R.id.answeringQuizFragment, false);
     }
 
     private void finishClicked() {
+        viewModel.clearViewModel();
         callback.remove();
-        Navigation.findNavController(requireView()).navigate(FinishedQuizFragmentDirections.actionFinishedQuizFragmentToMyQuizzes());
+        Navigation.findNavController(requireView()).popBackStack(R.id.my_quizzes, false);
     }
 
     private void openAnswersReport(AnswerReportType type) {

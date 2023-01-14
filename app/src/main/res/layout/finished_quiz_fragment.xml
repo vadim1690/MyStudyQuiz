@@ -12,6 +12,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/background"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -27,10 +28,10 @@
 
                 android:layout_height="300dp"
                 android:layout_marginTop="30dp"
-                app:strokeColor="@color/purple_500"
+                app:strokeColor="@color/primary_blue_soft"
                 app:strokeWidth="30dp"
                 app:textColor="@color/black"
-                app:trackColor="@color/black"
+                app:trackColor="@color/primary_blue"
                 app:trackWidth="15dp" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -199,6 +200,7 @@
                 android:id="@+id/try_again_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/MyButtonBigSize"
                 android:layout_margin="10dp"
                 android:text="Try again"
                 app:cornerRadius="10dp" />
@@ -207,6 +209,7 @@
                 android:id="@+id/finish_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/MyButtonBigSize"
                 android:layout_margin="10dp"
                 android:text="Finish"
                 app:cornerRadius="10dp" />

@@ -1,17 +1,16 @@
 package com.example.mystudyquiz.fragments;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.content.Intent;
-import android.net.Uri;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,50 +18,32 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.Navigation;
 
-import com.example.mystudyquiz.AppUtils;
+import com.example.mystudyquiz.BuildConfig;
+import com.example.mystudyquiz.Constants;
+import com.example.mystudyquiz.utils.AppUtils;
 import com.example.mystudyquiz.R;
 import com.example.mystudyquiz.databinding.AddNewQuizFragmentBinding;
 import com.example.mystudyquiz.model.Quiz;
 import com.example.mystudyquiz.viewmodel.QuizViewModel;
-import com.github.drjacky.imagepicker.ImagePicker;
-import com.github.drjacky.imagepicker.constant.ImageProvider;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import kotlin.jvm.internal.Intrinsics;
 
 
 public class AddNewQuizFragment extends Fragment {
     private AddNewQuizFragmentBinding binding;
     private QuizViewModel viewModel;
-    private ActivityResultLauncher<Intent> launcher;
-
+    private Integer selectedBackgroundColor;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setResultLaunchers();
+
     }
 
-    private void setResultLaunchers() {
-        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),(ActivityResult result)->{
-            if(result.getResultCode()==RESULT_OK){
-                if (result.getData() != null) {
-                    setPhoto(result.getData().getData());
-                }
-            }else if(result.getResultCode()== ImagePicker.RESULT_ERROR){
-                AppUtils.showAlertDialog(requireContext(),"FAILED!!!");
-            }
-        });
-    }
-
-    private void setPhoto(Uri uri) {
-        binding.addImageBtn.setImageURI(uri);
-        binding.addImageBtn.setEnabled(false);
-        binding.addImageText.setVisibility(View.GONE);
-    }
 
     @Nullable
     @Override
@@ -77,7 +58,38 @@ public class AddNewQuizFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         setViewModel(view);
         setOnClickListeners();
+        showAdBanner();
+    }
 
+    private void showAdBanner() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(Constants.GENERAL_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
+        if (sharedPreferences.getBoolean(Constants.GENERAL_SHARED_PREFERENCES_PRO_SUBSCRIPTION_KEY, false))
+            return;
+
+        String UNIT_ID = BuildConfig.ADMOB_BANNER_AD_ID;
+
+        AdView adView = new AdView(requireContext());
+        adView.setAdUnitId(UNIT_ID);
+        binding.bannerLayout.addView(adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        AdSize adSize = getAdSize();
+        adView.setAdSize(adSize);
+        adView.loadAd(adRequest);
+    }
+
+    private AdSize getAdSize() {
+        // Step 2 - Determine the screen width (less decorations) to use for the ad width.
+        Display display = requireActivity().getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float widthPixels = outMetrics.widthPixels;
+        float density = outMetrics.density;
+
+        int adWidth = (int) (widthPixels / density);
+
+        // Step 3 - Get adaptive ad size and return for setting on the ad view.
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(requireContext(), adWidth);
     }
 
     private void setViewModel(View view) {
@@ -87,32 +99,34 @@ public class AddNewQuizFragment extends Fragment {
     }
 
     private void setOnClickListeners() {
-        binding.addImageBtn.setOnClickListener(v -> openImagePicker());
+        binding.pickColorButton.setOnClickListener(view -> pickColor());
         binding.createQuizBtn.setOnClickListener(v -> createQuizClicked());
     }
 
+    private void pickColor() {
+        AppUtils.colorPickerBottomSheet(color -> {
+            selectedBackgroundColor = color;
+            binding.pickColorButton.setBackgroundColor(color);
+        }, getParentFragmentManager());
+    }
+
     private void createQuizClicked() {
-        viewModel.addNewQuiz(new Quiz(binding.quizNameEdt.getText().toString()));
+        if (!validateInput())
+            return;
+        viewModel.addNewQuiz(new Quiz(Objects.requireNonNull(binding.quizNameEdt.getText()).toString(), selectedBackgroundColor));
         Navigation.findNavController(requireView()).popBackStack();
     }
 
-    private void openImagePicker() {
+    private boolean validateInput() {
+        if (TextUtils.isEmpty(binding.quizNameEdt.getText())) {
+            AppUtils.showAlertDialog(requireContext(), "Please enter quiz name!");
+            return false;
+        }
 
-        ImagePicker.Companion.with(requireActivity())
-                .crop()
-                .cropFreeStyle()
-                .maxResultSize(512,512,true)
-                .provider(ImageProvider.BOTH) //Or bothCameraGallery()
-                .createIntentFromDialog(new Function1(){
-                    public Object invoke(Object var1){
-                        this.invoke((Intent)var1);
-                        return Unit.INSTANCE;
-                    }
+        if (selectedBackgroundColor == null)
+            selectedBackgroundColor = Color.WHITE;
+        return true;
 
-                    public final void invoke(@NotNull Intent it){
-                        Intrinsics.checkNotNullParameter(it,"it");
-                        launcher.launch(it);
-                    }
-                });
     }
+
 }

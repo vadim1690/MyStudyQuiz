@@ -1,34 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
+        android:layout_height="match_parent">
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/name_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Home fragment" />
+            android:textSize="35sp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Vadim Lazarevich"/>
 
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/privacy_policy_btn"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Privacy Policy" />
+            android:layout_below="@+id/name_text_view"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/terms_of_use_btn"
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/pro_sub_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pro subscription"
+                android:textSize="20sp"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Terms Of Use" />
+            android:layout_above="@+id/banner_layout"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/about_btn"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/privacy_policy_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                style="@style/MyButtonSmallSize"
+                android:text="Privacy Policy" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/terms_of_use_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                style="@style/MyButtonSmallSize"
+                android:text="Terms Of Use" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/about_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                style="@style/MyButtonSmallSize"
+                android:text="about" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/banner_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="about" />
+            android:layout_alignParentBottom="true">
 
-    </LinearLayout>
+        </FrameLayout>
+
+    </RelativeLayout>
+
 </layout>

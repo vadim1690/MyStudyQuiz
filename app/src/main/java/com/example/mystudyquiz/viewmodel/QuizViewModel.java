@@ -1,26 +1,30 @@
 package com.example.mystudyquiz.viewmodel;
 
-import android.util.Pair;
+import android.app.Application;
 
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
+import com.airbnb.lottie.Lottie;
+import com.airbnb.lottie.LottieDrawable;
+import com.example.mystudyquiz.data.entities.QuizStatistic;
 import com.example.mystudyquiz.model.Answer;
 import com.example.mystudyquiz.model.AnswerReportType;
 import com.example.mystudyquiz.model.Question;
+import com.example.mystudyquiz.model.QuestionList;
 import com.example.mystudyquiz.model.QuestionType;
 import com.example.mystudyquiz.model.Quiz;
 import com.example.mystudyquiz.repositories.QuizRepository;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-public class QuizViewModel extends ViewModel {
+public class QuizViewModel extends AndroidViewModel {
     private QuizRepository quizRepository;
-    private MutableLiveData<List<Quiz>> quizzes;
+    private LiveData<List<Quiz>> quizzes;
     private Quiz selectedQuiz;
     private Map<Question, Answer> correctAnswers;
     private Map<Question, Answer> wrongAnswers;
@@ -30,17 +34,110 @@ public class QuizViewModel extends ViewModel {
     private int currentQuestionIndex;
     private QuestionType newQuestionToAddType;
     private Answer selectedAnswer;
+    private LiveData<List<Question>> questionsList;
 
-    public QuizViewModel() {
-        this.quizRepository = new QuizRepository();
+
+    public interface QuizReadyCallback {
+        void onReady();
+    }
+
+    public interface QuestionsWithAnswersCallback {
+        void onAllQuestionsReady(List<Question> allQuestions);
+    }
+
+    public interface StatisticsCallback {
+        void onAllStatisticsCreated(List<QuizStatistic> quizStatisticList);
+    }
+
+    public QuizViewModel(Application application) {
+        super(application);
+        this.quizRepository = new QuizRepository(application);
         currentQuestionIndex = -1;
         correctAnswers = new HashMap<>();
         wrongAnswers = new HashMap<>();
     }
 
-    public MutableLiveData<List<Quiz>> getQuizzes() {
+
+    public void finishQuiz() {
+        double newScore = ((double) getCorrectAnswersCounter() / (double) getSelectedQuiz().getSize()) * 100;
+        int numberOfTimesTaken = selectedQuiz.getNumberOfTimesTaken();
+        double oldAverage = selectedQuiz.getAverage();
+        double newAverage = (oldAverage * numberOfTimesTaken + newScore) / (numberOfTimesTaken + 1);
+        selectedQuiz.setAverage(newAverage);
+        selectedQuiz.setNumberOfTimesTaken(selectedQuiz.getNumberOfTimesTaken() + 1);
+
+        selectedQuiz.setNumberOfCorrectTimes(selectedQuiz.getNumberOfCorrectTimes() + correctAnswers.keySet().size());
+        selectedQuiz.setNumberOfWrongTimes(selectedQuiz.getNumberOfWrongTimes() + wrongAnswers.keySet().size());
+        correctAnswers.keySet().forEach(question -> {
+            question.setNumberOfTimesCorrect(question.getNumberOfTimesCorrect() + 1);
+        });
+        wrongAnswers.keySet().forEach(question -> {
+            question.setNumberOfTimesWrong(question.getNumberOfTimesWrong() + 1);
+        });
+
+        List<Question> currentQuizQuestions = selectedQuiz.getQuestions().getQuestionList();
+        if (currentQuizQuestions != null) {
+            Question mostCorrect = currentQuizQuestions.stream().max((q1, q2) -> (int) (q1.getNumberOfTimesCorrect() - q2.getNumberOfTimesCorrect())).orElse(null);
+            Question mostWrong = currentQuizQuestions.stream().max((q1, q2) -> (int) (q1.getNumberOfTimesWrong() - q2.getNumberOfTimesWrong())).orElse(null);
+
+            if (mostCorrect != null)
+                selectedQuiz.setEasiestQuestionId(mostCorrect.getQuestionId());
+            if (mostWrong != null)
+                selectedQuiz.setHardestQuestionId(mostWrong.getQuestionId());
+
+        }
+
+        quizRepository.updateQuizWithQuestions(selectedQuiz);
+    }
+
+
+    public void getAllStatistics(StatisticsCallback statisticsCallback) {
+        quizRepository.getAllQuizStatistics(quizzes.getValue(), statisticsCallback);
+    }
+
+
+    public void startCurrentQuiz(QuizReadyCallback quizReadyCallback) {
+
+        quizRepository.getAllQuestionsWithAnswersForQuiz(selectedQuiz.getQuizId(), questionsList.getValue(), allQuestions -> {
+            selectedQuiz.setQuestions(new QuestionList(allQuestions));
+            quizReadyCallback.onReady();
+        });
+    }
+
+    public void deleteQuiz(Quiz quiz) {
+        quizRepository.deleteQuiz(quiz);
+    }
+
+    public void deleteQuestionFromCurrentQuiz(Question question) {
+        selectedQuiz.setSize(selectedQuiz.getSize() - 1);
+        quizRepository.deleteQuestion(question);
+        quizRepository.updateQuiz(selectedQuiz);
+    }
+
+    public void addToCurrentQuizCapacity(int capacityToAdd) {
+        selectedQuiz.setCapacity(selectedQuiz.getCapacity() + capacityToAdd);
+        quizRepository.updateQuiz(selectedQuiz);
+    }
+
+    public void sortCurrentQuestionAnswersRandomly() {
+        if (currentQuestion.getQuestionType() == QuestionType.MULTIPLE_CHOICE) {
+            Collections.shuffle(currentQuestion.getAnswerList());
+        }
+    }
+
+
+    public LiveData<List<Quiz>> getQuizzes() {
         quizzes = quizRepository.getQuizzes();
         return quizzes;
+    }
+
+
+    public int getCurrentQuestionIndex() {
+        return currentQuestionIndex;
+    }
+
+    public void setCurrentQuestionIndex(int currentQuestionIndex) {
+        this.currentQuestionIndex = currentQuestionIndex;
     }
 
     public Map<Question, Answer> getCorrectAnswers() {
@@ -73,7 +170,7 @@ public class QuizViewModel extends ViewModel {
      * @return true if the quiz is finished, false if not.
      */
     public boolean isQuizFinished() {
-        return currentQuestionIndex == selectedQuiz.getSize() - 1;
+        return currentQuestionIndex >= selectedQuiz.getSize() - 1;
     }
 
     /**
@@ -106,6 +203,18 @@ public class QuizViewModel extends ViewModel {
         wrongAnswers = new HashMap<>();
     }
 
+    public void clearViewModel() {
+        currentQuizStartOver();
+        quizzes = null;
+        selectedQuiz = null;
+        answersReportType = null;
+        currentQuestion = null;
+        newQuestionToAdd = null;
+        newQuestionToAddType = null;
+        selectedAnswer = null;
+        questionsList = null;
+    }
+
     public AnswerReportType getAnswersReportType() {
         return answersReportType;
     }
@@ -131,7 +240,6 @@ public class QuizViewModel extends ViewModel {
 
     public void addNewQuiz(Quiz quiz) {
         quizRepository.addNewQuiz(quiz);
-
     }
 
     public void setNewQuestionToAdd(Question question) {
@@ -143,7 +251,11 @@ public class QuizViewModel extends ViewModel {
     }
 
     public void addNewQuestionToCurrentQuiz(Question question) {
-        selectedQuiz.getQuestions().addQuestion(question);
+        selectedQuiz.setSize(selectedQuiz.getSize() + 1);
+        question.setQuizId(selectedQuiz.getQuizId());
+        quizRepository.addNewQuestionToCurrentQuiz(question);
+        quizRepository.updateQuiz(selectedQuiz);
+
     }
 
     public void setNewQuestionToAddType(QuestionType questionType) {
@@ -157,4 +269,11 @@ public class QuizViewModel extends ViewModel {
     public void setSelectedAnswer(Answer selectedAnswer) {
         this.selectedAnswer = selectedAnswer;
     }
+
+    public LiveData<List<Question>> getQuestionsForQuiz(String quizId) {
+        questionsList = quizRepository.getQuestionsForQuiz(quizId);
+        return questionsList;
+    }
 }
+
+

@@ -9,10 +9,10 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mystudyquiz.BR;
+
 import com.example.mystudyquiz.R;
 import com.example.mystudyquiz.databinding.AnswersReportItemBinding;
-import com.example.mystudyquiz.databinding.QuestionsItemBinding;
+
 import com.example.mystudyquiz.model.Answer;
 import com.example.mystudyquiz.model.AnswerReportType;
 import com.example.mystudyquiz.model.Question;
@@ -20,7 +20,7 @@ import com.example.mystudyquiz.model.QuestionList;
 
 import java.util.Map;
 
-public class AnswersReportAdapter extends RecyclerView.Adapter<AnswersReportAdapter.ViewHolder>  {
+public class AnswersReportAdapter extends RecyclerView.Adapter<AnswersReportAdapter.ViewHolder> {
     private QuestionList mDataSet;
     private Map<Question, Answer> answers;
     private AnswerReportType answerReportType;
@@ -42,7 +42,7 @@ public class AnswersReportAdapter extends RecyclerView.Adapter<AnswersReportAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.bind(mDataSet.getQuestionList().get(position),answers != null ? answers.get(mDataSet.getQuestionList().get(position)) : null);
+        holder.bind(mDataSet.getQuestionList().get(position), answers != null ? answers.get(mDataSet.getQuestionList().get(position)) : null);
     }
 
     @Override
@@ -50,17 +50,19 @@ public class AnswersReportAdapter extends RecyclerView.Adapter<AnswersReportAdap
         return mDataSet.getSize();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         AnswersReportItemBinding binding;
+
         public ViewHolder(@NonNull AnswersReportItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
-        public void bind(Question question,@Nullable Answer answer) {
+
+        public void bind(Question question, @Nullable Answer answer) {
             binding.setQuestion(question);
-            if(answer != null)
+            if (answer != null)
                 binding.setWrongAnswer(answer);
-            switch (answerReportType){
+            switch (answerReportType) {
                 case ALL_ANSWERS:
                     binding.wrongAnswerLayout.setVisibility(View.GONE);
                     binding.correctAnswerLayout.setVisibility(View.GONE);

@@ -1,19 +1,14 @@
 package com.example.mystudyquiz.fragments;
 
-import static android.app.Activity.RESULT_OK;
+import static com.example.mystudyquiz.model.QuestionType.BOOLEAN;
+import static com.example.mystudyquiz.model.QuestionType.MULTIPLE_CHOICE;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -21,24 +16,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.Navigation;
 
-import com.example.mystudyquiz.AppUtils;
+import com.example.mystudyquiz.utils.AppUtils;
 import com.example.mystudyquiz.R;
 import com.example.mystudyquiz.databinding.AddNewQuestionFragmentBinding;
-import com.example.mystudyquiz.databinding.AddNewQuizFragmentBinding;
-import com.example.mystudyquiz.model.BooleanQuestion;
-import com.example.mystudyquiz.model.MultipleChoiceQuestion;
 import com.example.mystudyquiz.model.Question;
-import com.example.mystudyquiz.model.QuestionType;
-import com.example.mystudyquiz.model.Quiz;
 import com.example.mystudyquiz.viewmodel.QuizViewModel;
-import com.github.drjacky.imagepicker.ImagePicker;
-import com.github.drjacky.imagepicker.constant.ImageProvider;
-
-import org.jetbrains.annotations.NotNull;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import kotlin.jvm.internal.Intrinsics;
 
 
 public class AddNewQuestionFragment extends Fragment {
@@ -76,16 +58,16 @@ public class AddNewQuestionFragment extends Fragment {
     }
 
     private void setQuestionTypes() {
-        String[] types = new String[]{"Multiple choice(4 Options)", "Boolean(True/False)"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.dropdown_menu_popup_item, types);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.dropdown_menu_popup_item, getResources().getStringArray(R.array.question_types));
+
         binding.questionTypeDropdown.setAdapter(adapter);
         binding.questionTypeDropdown.setOnItemClickListener((parent, view, position, id) -> {
-            switch (position){
+            switch (position) {
                 case 0:
-                    viewModel.setNewQuestionToAddType(QuestionType.MULTIPLE_CHOICE);
+                    viewModel.setNewQuestionToAddType(MULTIPLE_CHOICE);
                     break;
                 case 1:
-                    viewModel.setNewQuestionToAddType(QuestionType.BOOLEAN);
+                    viewModel.setNewQuestionToAddType(BOOLEAN);
                     break;
             }
 
@@ -106,25 +88,32 @@ public class AddNewQuestionFragment extends Fragment {
 
     private void continueToAddingAnswers() {
         if (!validateInput()) {
-            AppUtils.showAlertDialog(requireContext(), "Please enter question text");
             return;
         }
-        viewModel.setNewQuestionToAdd(getQuestionBySelectedType());
+        viewModel.setNewQuestionToAdd(new Question(binding.questionTextEdt.getText().toString(), viewModel.getNewQuestionToAddType()));
         Navigation.findNavController(requireView()).navigate(AddNewQuestionFragmentDirections.actionAddNewQuestionFragmentToAddAnswersToQuestionFragment());
 
     }
 
-    private Question getQuestionBySelectedType() {
-        switch (viewModel.getNewQuestionToAddType()) {
-            case MULTIPLE_CHOICE: return new MultipleChoiceQuestion(binding.questionTextEdt.getText().toString());
 
-            case BOOLEAN: return new BooleanQuestion(binding.questionTextEdt.getText().toString());
-        }
-
-        return null;
+    @Override
+    public void onResume() {
+        super.onResume();
+        setQuestionTypes();
     }
 
     private boolean validateInput() {
-        return !binding.questionTextEdt.toString().isEmpty();
+        if (binding.questionTextEdt.toString().isEmpty()) {
+            AppUtils.showAlertDialog(requireContext(), "Please enter question text");
+            return false;
+        }
+
+        if (viewModel.getNewQuestionToAddType() == null) {
+            AppUtils.showAlertDialog(requireContext(), "Please choose question type");
+            return false;
+        }
+        return true;
     }
+
+
 }

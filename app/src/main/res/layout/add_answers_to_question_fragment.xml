@@ -17,6 +17,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/background"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -51,11 +52,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
-                android:backgroundTint="@color/blue">
+                android:minHeight="100dp"
+                android:backgroundTint="@color/primary_blue">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:layout_margin="10dp"
                     android:gravity="start"
                     android:text="@{question.text}"
@@ -89,20 +92,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:gravity="start"
-                        app:iconGravity="end"
-                        app:iconTint="@null"
+                        style="@style/MyBooleanButtonsAnswers"
                         android:text="True"/>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/boolean_answer_false"
                         android:layout_width="match_parent"
-                        android:layout_margin="10dp"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
-                        app:iconTint="@null"
-                        app:iconGravity="end"
-                        android:text="false"/>
+                        android:layout_margin="10dp"
+                        style="@style/MyBooleanButtonsAnswers"
+                        android:text="False"/>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -223,11 +222,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:padding="15dp"
+                style="@style/MyButtonSmallSize"
                 android:layout_margin="10dp"
-                android:text="create"
-                android:textSize="18sp"
-                app:cornerRadius="2dp" />
+                android:padding="15dp"
+                android:text="Create" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
