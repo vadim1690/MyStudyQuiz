@@ -6,14 +6,14 @@
 
     <fragment
         android:id="@+id/account"
-        android:name="com.example.mystudyquiz.fragments.AccountFragment"
+        android:name="com.studyquiz.mystudyquiz.fragments.AccountFragment"
         android:label="Account" />
 
     <navigation android:id="@+id/my_quizzes_navigation"
         app:startDestination="@id/my_quizzes">
         <fragment
             android:id="@+id/my_quizzes"
-            android:name="com.example.mystudyquiz.fragments.QuizzesFragment"
+            android:name="com.studyquiz.mystudyquiz.fragments.QuizzesFragment"
             android:label="QuizzesFragment">
             <action
                 android:id="@+id/action_my_quizzes_to_questionsFragment"
@@ -34,25 +34,25 @@
 
         <dialog
             android:id="@+id/statisticsDialog"
-            android:name="com.example.mystudyquiz.fragments.StatisticsDialog"
+            android:name="com.studyquiz.mystudyquiz.fragments.StatisticsDialog"
             app:enterAnim="@android:anim/fade_in"
             android:label="StatisticsDialog" />
 
         <fragment
             android:id="@+id/addAnswersToQuestionFragment"
-            android:name="com.example.mystudyquiz.fragments.AddAnswersToQuestionFragment"
+            android:name="com.studyquiz.mystudyquiz.fragments.AddAnswersToQuestionFragment"
             android:label="AddAnswersToQuestionFragment" >
         </fragment>
         <fragment
             android:id="@+id/addNewQuizFragment"
-            android:name="com.example.mystudyquiz.fragments.AddNewQuizFragment"
+            android:name="com.studyquiz.mystudyquiz.fragments.AddNewQuizFragment"
             android:label="AddNewQuizFragment" >
         </fragment>
 
 
         <fragment
             android:id="@+id/addNewQuestionFragment"
-            android:name="com.example.mystudyquiz.fragments.AddNewQuestionFragment"
+            android:name="com.studyquiz.mystudyquiz.fragments.AddNewQuestionFragment"
             android:label="AddNewQuestionFragment" >
             <action
                 android:id="@+id/action_addNewQuestionFragment_to_addAnswersToQuestionFragment"
@@ -63,7 +63,7 @@
 
         <fragment
             android:id="@+id/questionsFragment"
-            android:name="com.example.mystudyquiz.fragments.QuestionsFragment"
+            android:name="com.studyquiz.mystudyquiz.fragments.QuestionsFragment"
             android:label="QuestionsFragment">
             <action
                 android:id="@+id/action_questionsFragment_to_answeringQuizFragment"
@@ -76,7 +76,7 @@
 
         <fragment
             android:id="@+id/answeringQuizFragment"
-            android:name="com.example.mystudyquiz.fragments.AnsweringQuizFragment"
+            android:name="com.studyquiz.mystudyquiz.fragments.AnsweringQuizFragment"
             android:label="AnsweringQuizFragment" >
 
             <action
@@ -87,7 +87,7 @@
 
         <fragment
             android:id="@+id/finishedQuizFragment"
-            android:name="com.example.mystudyquiz.fragments.FinishedQuizFragment"
+            android:name="com.studyquiz.mystudyquiz.fragments.FinishedQuizFragment"
             android:label="FinishedQuizFragment">
             <action
                 android:id="@+id/action_finishedQuizFragment_to_answersReportBottomDialog"
@@ -96,7 +96,7 @@
 
         <dialog
             android:id="@+id/answersReportBottomDialog"
-            android:name="com.example.mystudyquiz.fragments.AnswersReportBottomDialog"
+            android:name="com.studyquiz.mystudyquiz.fragments.AnswersReportBottomDialog"
             android:label="AnswersReportBottomDialog" />
     </navigation>
 

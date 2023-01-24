@@ -6,7 +6,7 @@
 
         <variable
             name="quizStatistics"
-            type="com.example.mystudyquiz.data.entities.QuizStatistic" />
+            type="com.studyquiz.mystudyquiz.data.entities.QuizStatistic" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

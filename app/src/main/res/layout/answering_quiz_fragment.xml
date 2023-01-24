@@ -5,13 +5,13 @@
 
         <variable
             name="question"
-            type="com.example.mystudyquiz.model.Question" />
+            type="com.studyquiz.mystudyquiz.model.Question" />
 
     </data>
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="@drawable/boredr_background"
+        android:background="#E4E4E4"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -38,6 +38,7 @@
             android:gravity="center">
 
             <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/help_btn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 app:tint="@color/black"

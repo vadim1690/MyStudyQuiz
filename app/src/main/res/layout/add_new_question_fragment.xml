@@ -7,14 +7,14 @@
 
         <variable
             name="quiz"
-            type="com.example.mystudyquiz.model.Quiz" />
+            type="com.studyquiz.mystudyquiz.model.Quiz" />
     </data>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background"
+        android:background="#E4E4E4"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.LinearLayoutCompat

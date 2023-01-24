@@ -3,10 +3,10 @@
     <data>
         <variable
             name="question"
-            type="com.example.mystudyquiz.model.Question" />
+            type="com.studyquiz.mystudyquiz.model.Question" />
         <variable
             name="wrongAnswer"
-            type="com.example.mystudyquiz.model.Answer" />
+            type="com.studyquiz.mystudyquiz.model.Answer" />
     </data>
 
 
